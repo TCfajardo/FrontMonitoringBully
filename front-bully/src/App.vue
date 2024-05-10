@@ -4,19 +4,22 @@
   </div>
   <div class="content">
     <NodeTable :nodes="nodos" @detener-nodo="detenerNodo" />
-
+    <div class="space"></div>
+    <LogList :logs="exampleLogs" />
   </div>
 </template>
 
 <script>
 import NavbarMenu from './components/NavbarMenu.vue';
 import NodeTable from  './components/NodeTable.vue';
+import LogList from  './components/LogList.vue';
 
 export default {
   name: 'App',
   components: {
     NavbarMenu, 
     NodeTable,
+    LogList,
   },
   data() {
     return {
@@ -68,6 +71,32 @@ export default {
           isLeader: false,
         }
       ],
+      exampleLogs: [
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+        "Log 1",
+        "Log 2",
+        "Log 3",
+      ]
     };
   },
   methods: {
@@ -96,5 +125,10 @@ export default {
 
 .content{
   padding: 3.5%;
+  display: flex;
+}
+
+.space {
+  width: 8%;
 }
 </style>
