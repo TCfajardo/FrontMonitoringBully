@@ -3,9 +3,9 @@
     <NavbarMenu /> 
   </div>
   <div class="content">
-    <NodeTable :nodes="nodos" @detener-nodo="detenerNodo" />
+    <NodeTable />
     <div class="space"></div>
-    <LogList :logs="exampleLogs" />
+    <LogList  />
   </div>
 </template>
 
@@ -23,80 +23,7 @@ export default {
   },
   data() {
     return {
-      nodos: [
-        {
-          id: 1,
-          ip: '192.168.0.1',
-          isActive: true,
-          isLeader: true,
-        },
-        {
-          id: 2,
-          ip: '192.168.0.2',
-          isActive: true,
-          isLeader: false,
-        },
-        {
-          id: 3,
-          ip: '192.168.0.3',
-          isActive: false,
-          isLeader: false,
-        },
-        {
-          id: 4,
-          ip: '192.168.0.2',
-          isActive: true,
-          isLeader: false,
-        },
-        {
-          id: 5,
-          ip: '192.168.0.3',
-          isActive: false,
-          isLeader: false,
-        },{
-          id: 4,
-          ip: '192.168.0.2',
-          isActive: true,
-          isLeader: false,
-        },
-        {
-          id: 5,
-          ip: '192.168.0.3',
-          isActive: false,
-          isLeader: false,
-        },{
-          id: 4,
-          ip: '192.168.0.2',
-          isActive: true,
-          isLeader: false,
-        }
-      ],
-      exampleLogs: [
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-        "Log 1",
-        "Log 2",
-        "Log 3",
-      ]
+      
     };
   },
   methods: {

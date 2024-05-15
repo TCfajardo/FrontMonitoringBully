@@ -10,15 +10,15 @@
                 <div class="node-cell">Action</div>
             </div>
 
-            <div v-for="node in nodes" :key="node.id" class="node-row">
+            <div v-for="(node, index) in uniqueNodes" :key="index" class="node-row">
                 <div class="node-cell">{{ node.id }}</div>
-                <div class="node-cell">{{ node.ip }}</div>
+                <div class="node-cell">{{ node.clientUrl }}</div>
                 <div class="node-cell">
                     <div :class="node.isActive ? 'status-indicator-active' : 'status-indicator-inactive'"
                         class="status-indicator" role="status" aria-label="Status indicator"></div>
                 </div>
                 <div class="node-cell">
-                    <img v-if="node.isLeader" src="@/assets/crown_king.jpg" alt="Leader icon" class="leader-icon">
+                    <img v-if="node.imLeader" src="@/assets/crown_king.jpg" alt="Leader icon" class="leader-icon">
                     <img v-else src="@/assets/peon.jpg" alt="Non-leader icon" class="leader-icon">
                 </div>
                 <div class="node-cell">
@@ -32,21 +32,67 @@
 </template>
 
 <script>
+import io from 'socket.io-client';
+
 export default {
     name: 'NodeTable',
-    props: {
-        nodes: {
-            type: Array,
-            required: true,
-        },
+    data() {
+        return {
+            receivedData: null,
+            nodes: []
+        };
+    },
+    mounted() {
+        const clientUrl = window.location.href;
+        this.socket = io('http://localhost:4000', { query: { clientUrl } });
+
+        this.socket.on('connect', () => {
+            console.log('Connected to server ws');
+            this.isConnected = true;
+        });
+        this.socket.on('disconnect', () => {
+            console.log('Disconnected from server ws');
+            this.isConnected = false;
+            this.servers = [];
+        });
+
+        // Escuchar el evento enviado desde el servidor
+        this.socket.on('node_data_to_vue', (data) => {
+            console.log('Datos recibidos en Vue:', data);
+            data.forEach(newNode => {
+                const existingNodeIndex = this.nodes.findIndex(node => node.clientUrl === newNode.clientUrl);
+                if (existingNodeIndex !== -1) {
+                    // Actualizar el estado del nodo existente
+                    this.nodes[existingNodeIndex] = newNode;
+                } else {
+                    // Agregar el nuevo nodo a la lista
+                    this.nodes.push(newNode);
+                }
+            });
+        });
+
+    },
+    computed: {
+        // Filtrar nodos únicos por clientUrl
+        uniqueNodes() {
+            const unique = {};
+            return this.nodes.filter(node => {
+                if (!unique[node.clientUrl]) {
+                    unique[node.clientUrl] = true;
+                    return true;
+                }
+                return false;
+            });
+        }
     },
     methods: {
         detenerNodo(nodeId) {
-            this.$emit('detener-nodo', nodeId);
+            this.socket.emit('stop_node', nodeId);
         },
     },
 };
 </script>
+
 
 <style scoped>
 .node-table {
@@ -55,13 +101,13 @@ export default {
     border-radius: 10px;
     background-color: #ffffff;
     width: 100%;
-    
-    margin: 0 ;
+
+    margin: 0;
 }
 
 .table-container {
     max-height: 400px;
-    overflow-y: auto; 
+    overflow-y: auto;
 }
 
 .node-row {
