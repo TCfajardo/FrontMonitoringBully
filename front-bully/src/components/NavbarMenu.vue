@@ -1,7 +1,7 @@
 <template>
     <div class="menu">
         <div class="algoritmo-nombre">
-            <h2>Bully Algorithm Implementation</h2> <!-- El texto a centrar -->
+            <h2>Bully Algorithm Implementation</h2> 
         </div>
         <div class="botones">
             <button @click="crearNodo">Add Node</button>
@@ -10,12 +10,34 @@
 </template>
 
 <script>
+import axios from 'axios';
+import io from 'socket.io-client';
+
 export default {
     name: 'NavbarMenu',
     methods: {
-        crearNodo() {
+        async crearNodo() {
+            try {
+                const response = await axios.post('http://localhost:4000/crear-nuevo-nodo');
+                console.log(response.data);
+            } catch (error) {
+                console.error('Error al crear el nuevo nodo:', error.message);
+            }
             this.$emit('crear-nodo');
         },
+    },
+    mounted() {
+        const clientUrl = window.location.href;
+        this.socket = io('http://localhost:4000', { query: { clientUrl } });
+
+        this.socket.on('connect', () => {
+            console.log('Connected to server ws');
+            this.isConnected = true;
+        });
+        this.socket.on('disconnect', () => {
+            console.log('Disconnected from server ws');
+            this.isConnected = false;
+        });
     },
 };
 </script>
